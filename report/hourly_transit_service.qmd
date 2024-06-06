@@ -1,0 +1,159 @@
+---
+title: Transit Service in California
+execute:
+  echo: false
+format:
+  html:
+    theme: yeti
+    cold-fold: true
+    mainfont: sans-serif
+    monofont: sans-serif
+jupyter: python3
+---
+
+```{python}
+#| tags: []
+%%html
+<style type='text/css'>
+.CodeMirror{
+font-size: 12px;
+</style>
+```
+
+
+```{python}
+#| tags: []
+# flatly, lumen, sandstone, yeti
+#import pandas as pd
+import polars as pl
+from great_tables import GT, _data_color, md, nanoplot_options
+from IPython.display import Markdown
+```
+
+```{python}
+#| tags: []
+df = pl.read_parquet(
+    f"../data/arrivals_polars.parquet"
+).sort("caltrans_district", "n_trips", descending=[False, False])
+```
+
+```{python}
+#| tags: []
+all_districts = sorted(df.get_column("caltrans_district").unique())
+```
+
+```{python}
+#| tags: []
+def get_hex(color_name: str) -> str:
+    """
+    Since some of the color names don't pull the hex code, 
+    we'll grab it here.
+    """
+    return _data_color.constants.COLOR_NAME_TO_HEX[color_name]
+
+nano_options = nanoplot_options(
+    data_point_radius=0,
+    data_point_stroke_color="none",
+    data_point_stroke_width=0,
+    data_line_type="curved",
+    data_line_stroke_color=get_hex("steelblue4"),
+    data_line_stroke_width=8,
+    data_area_fill_color=get_hex("steelblue4"),
+    #vertical_guide_stroke_color=None,
+    show_y_axis_guide=True,
+    #show_vertical_guides=False,
+    interactive_data_values = True,
+    #reference_line_color=get_hex("salmon1"),
+    show_reference_line=False
+)
+```
+
+```{python}
+#| tags: []
+# https://quarto.org/docs/output-formats/html-themes.html
+# https://github.com/posit-dev/great-tables/blob/main/great_tables/_data_color/constants.py
+def make_plot(df):
+    table = (GT(df)
+     #.data_color(
+     #    columns = ["caltrans_district"],
+     #    palette = "Pastel1"
+     #)
+    .fmt_integer(
+          columns = ["n_trips"]
+     ).data_color(
+        columns=["n_trips"],
+        palette=["white", "steelblue"],
+        na_color="lightgray"
+     ).fmt_nanoplot(
+         columns = "weekday_arrivals", 
+         plot_type="line",
+         reference_line="mean",
+         options = nano_options
+     ).fmt_nanoplot(
+         columns = "weekend_arrivals", 
+         plot_type="line",
+         reference_line="mean",
+         options = nano_options
+     ).cols_label(
+         name = "Operator",
+         n_trips = "Weekly Trips",
+         weekday_arrivals = "Weekday Arrivals",
+         weekend_arrivals = "Weekend Arrivals",
+     ).sub_missing(
+         columns = ["weekday_arrivals", "weekend_arrivals"],
+         missing_text = ""
+     ).tab_header(
+         title = "Transit Arrivals by the Hour",
+         #subtitle = "weekday vs weekend totals"
+     )#.tab_source_note(
+      #   source_note = "GTFS scheduled stop_times.txt"
+     #).tab_source_note(
+      #  source_note = md(
+      #      "[GTFS specification](https://gtfs.org/schedule/reference/#stop_timestxt)"
+      #  )
+     #)
+    .tab_options(
+        container_width = "100%",
+        table_background_color="white",
+        table_body_hlines_style="none",
+        table_body_vlines_style="none",
+        heading_background_color="white",
+        column_labels_background_color="white",
+        row_group_background_color="white",
+        stub_background_color="white",
+        source_notes_background_color="white"
+     )
+    .cols_hide("caltrans_district")
+    )
+    return table
+```
+
+```{python}
+#| tags: []
+def district_plot(district_name: str):
+    display(Markdown(f"## {district_name}"))
+    table = make_plot(df.filter(pl.col("caltrans_district") == district_name))
+    display(table)
+```
+
+How does transit service breakdown by the hour?
+
+While transit operators typically operate at higher frequencies during peak 
+commuting hours, there might be differences across operators. 
+
+Some operators might have consistent all day service (District 7 - LA Metro), while others
+operate primarily during peak hours or only certain hours of the day. 
+
+We can use GTFS scheduled stop times to count the number of arrivals 
+for each hour of the day and look at how weekday and weekend service differ by operators.
+    
+References:
+* [General Transit Feed Specification](https://gtfs.org/)
+* [GTFS stop_times table](https://gtfs.org/schedule/reference/#stop_timestxt)
+
+```{python}
+#| tags: []
+for d in all_districts:
+    district_plot(d)
+```
+

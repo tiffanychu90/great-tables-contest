@@ -5,6 +5,11 @@ GCS_FILE_PATH = (
     "rt_delay/compiled_cached_views/"
 )
 
+SCHED_GCS = (
+    "gs://calitp-analytics-data/data-analyses/"
+    "gtfs_schedule/"
+)
+
 start_date = "2024-04-15"
 end_date = "2024-04-21"
 

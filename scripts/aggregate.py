@@ -129,7 +129,7 @@ def transform_arrivals_for_polars_df(
     Operator2   [weekday_arrival_list]  [weekend_arrival_list]
     """
     # Transform long df into condensed version of arrivals (hold as list)
-    group_cols = ["name", "day_type"]
+    group_cols = ["name", "day_type", "caltrans_district"]
     
     df2 = (df.sort_values(group_cols + ["arrival_hour"])
      .groupby(group_cols)
@@ -152,13 +152,16 @@ def transform_arrivals_for_polars_df(
     ).set_index("name")
     
     df4 = pd.merge(
-        df[["name", "n_trips"]].drop_duplicates().set_index("name"),
+        df[["caltrans_district", "name", "n_trips"]].drop_duplicates().set_index("name"),
         df3,
-        on = "name",
+        left_index = True,
+        right_index = True,
         how = "inner"
     ).reset_index()
     
-    return df4
+    col_order = ["caltrans_district"] + [c for c in df4.columns if c != "caltrans_district"]
+    
+    return df4.reindex(columns = col_order)
 
 
 if __name__ == "__main__":
@@ -189,10 +192,15 @@ if __name__ == "__main__":
     ).rename(columns = {"stop_sequence": "n_arrivals"})
     
     operator_trips = operator_stats(date_list)
+    district_crosswalk = pd.read_parquet("../data/operator_district_crosswalk.parquet")
     
     arrivals_per_hour2 = pd.merge(
         arrivals_per_hour,
         operator_trips,
+        on = "name",
+        how = "inner"
+    ).merge(
+        district_crosswalk,
         on = "name",
         how = "inner"
     )
@@ -201,7 +209,8 @@ if __name__ == "__main__":
         # Clean up operator name
         name = arrivals_per_hour2.name.str.replace('Schedule', '').str.strip(),
     )
-    
+        
+    # Want caltrans_district 
     arrivals_per_hour2.to_parquet("../data/arrivals_per_hour.parquet")
     
     

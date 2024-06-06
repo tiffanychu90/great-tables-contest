@@ -2,3 +2,5 @@ great_tables==0.6.1
 jupyterlab-github==3.0.1
 pandas==1.5.3
 polars==0.20.29
+quarto-cli==1.4.554
+quarto==0.1.0
