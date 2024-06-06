@@ -7,8 +7,8 @@ process_data:
     
 quarto_report:
     # this renders as html
-	#quarto render report.ipynb --execute 
+	#quarto render hourly_transit_service.ipynb --execute 
     # to convert ipynb to qmd
-	quarto convert report.ipynb 
-    #https://quarto.org/docs/computations/parameters.html#jupyter
+	quarto convert hourly_transit_service.ipynb 
+    #https://quarto.org/docs/computations/parameters.html#jupyter couldn't get this to work
 	quarto render report.qmd --execute-params params.yml
