@@ -12,3 +12,4 @@ quarto_report:
 	quarto convert hourly_transit_service.ipynb 
     #https://quarto.org/docs/computations/parameters.html#jupyter couldn't get this to work
 	quarto render report.qmd --execute-params params.yml
+	quarto publish hourly_transit_service.qmd
