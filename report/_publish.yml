@@ -1,0 +1,4 @@
+- source: hourly_transit_service.qmd
+  quarto-pub:
+    - id: db462d5e-4afe-4354-bd55-ecd5b97f514f
+      url: 'https://tiffanychu90.quarto.pub/transit-service-in-california'
