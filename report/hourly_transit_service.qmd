@@ -12,7 +12,6 @@ jupyter: python3
 ```{python}
 #| tags: []
 # theme: flatly, lumen, sandstone, yeti
-#import pandas as pd
 import polars as pl
 from great_tables import GT, _data_color, md, nanoplot_options
 from IPython.display import Markdown
@@ -145,7 +144,8 @@ Here are a couple of interesting service patterns:
 ```{python}
 #| tags: []
 for d in all_districts:
-    make_plot(df.filter(pl.col("caltrans_district") == d))
+    table = make_plot(df.filter(pl.col("caltrans_district") == d))
+    display(table)
 ```
 
 
