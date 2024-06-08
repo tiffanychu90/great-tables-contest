@@ -4,8 +4,6 @@ execute:
   echo: false
 format:
   html:
-    theme: yeti
-    cold-fold: true
     mainfont: sans-serif
     monofont: sans-serif
 jupyter: python3
@@ -13,17 +11,7 @@ jupyter: python3
 
 ```{python}
 #| tags: []
-%%html
-<style type='text/css'>
-.CodeMirror{
-font-size: 12px;
-</style>
-```
-
-
-```{python}
-#| tags: []
-# flatly, lumen, sandstone, yeti
+# theme: flatly, lumen, sandstone, yeti
 #import pandas as pd
 import polars as pl
 from great_tables import GT, _data_color, md, nanoplot_options
@@ -73,16 +61,18 @@ nano_options = nanoplot_options(
 # https://quarto.org/docs/output-formats/html-themes.html
 # https://github.com/posit-dev/great-tables/blob/main/great_tables/_data_color/constants.py
 def make_plot(df):
+    """
+    Make table for each district.
+    """
+    # equivalent of df.iloc
+    district_name = df.item(0, "caltrans_district")
+    
     table = (GT(df)
-     #.data_color(
-     #    columns = ["caltrans_district"],
-     #    palette = "Pastel1"
-     #)
     .fmt_integer(
           columns = ["n_trips"]
      ).data_color(
         columns=["n_trips"],
-        palette=["white", "steelblue"],
+        palette=["white", get_hex("mediumseagreen")],
         na_color="lightgray"
      ).fmt_nanoplot(
          columns = "weekday_arrivals", 
@@ -103,8 +93,8 @@ def make_plot(df):
          columns = ["weekday_arrivals", "weekend_arrivals"],
          missing_text = ""
      ).tab_header(
-         title = "Transit Arrivals by the Hour",
-         #subtitle = "weekday vs weekend totals"
+         title = f"District {district_name}: Stop Arrivals by Hour",
+         subtitle = "weekday vs weekend totals"
      )#.tab_source_note(
       #   source_note = "GTFS scheduled stop_times.txt"
      #).tab_source_note(
@@ -128,32 +118,34 @@ def make_plot(df):
     return table
 ```
 
-```{python}
-#| tags: []
-def district_plot(district_name: str):
-    display(Markdown(f"## {district_name}"))
-    table = make_plot(df.filter(pl.col("caltrans_district") == district_name))
-    display(table)
-```
-
 How does transit service breakdown by the hour?
 
 While transit operators typically operate at higher frequencies during peak 
 commuting hours, there might be differences across operators. 
 
-Some operators might have consistent all day service (District 7 - LA Metro), while others
-operate primarily during peak hours or only certain hours of the day. 
-
 We can use GTFS scheduled stop times to count the number of arrivals 
-for each hour of the day and look at how weekday and weekend service differ by operators.
+for each hour of the day and look at how weekday and weekend service differ by operators. Within each Caltrans District, operators are sorted according to the number of weekly trip volume, from least to most.
+
+Here are a couple of interesting service patterns:
+
+## Commuter Service
+* **Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)** both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
+
+## Primarily Midday Service
+* **Cerritos on Wheels (District 7)** operates strictly during business hours (9 AM - 5 PM).
+
+## Service for Travelers
+* **LAX FlyAway (District 7)** operates round-the-clock, dipping only between 2 AM - 3 AM.
+* **Anaheim Resort (District 12)** continuously provides shuttle service to Disneyland visitors, except from 2 AM - 4 AM.
     
-References:
-* [General Transit Feed Specification](https://gtfs.org/)
+### References
+* [General Transit Feed Specification](https://gtfs.org/)<br>
 * [GTFS stop_times table](https://gtfs.org/schedule/reference/#stop_timestxt)
 
 ```{python}
 #| tags: []
 for d in all_districts:
-    district_plot(d)
+    make_plot(df.filter(pl.col("caltrans_district") == d))
 ```
+
 
