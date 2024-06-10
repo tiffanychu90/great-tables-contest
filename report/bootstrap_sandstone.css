@@ -245,22 +245,19 @@ h2, .h2 {
 @media (min-width: 1200px) {
   h2, .h2 {
     font-size: calc(1.325rem + 0.4vw);
-    color: var(--bs-gray-700);
+    color: var(--bs-gray-200);
     font-weight: normal
   }
 }
 
 h3, .h3 {
   font-size: calc(1.3rem + 0.6vw);
-  color: var(--bs-gray-200);  
   font-weight: normal;
 }
 @media (min-width: 1200px) {
   h3, .h3 {
-    #font-size: 1.75rem;
     font-size: calc(1.3rem + 0.6vw);
     font-weight: normal;
-    color: var(--bs-gray-200);
   }
 }
 
