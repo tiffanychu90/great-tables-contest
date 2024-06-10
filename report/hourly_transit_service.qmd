@@ -144,25 +144,50 @@ for each hour of the day and look at how weekday and weekend service differ by o
 
 ## Service Patterns
 
-#### Higher Peak Service with Steady Midday Service
+### Higher Peak Service with Steady Midday Service
 * This is a common service pattern. There are slight camel peaks during the AM and PM peak periods. Service may drop slightly during early morning, midday, and evening periods, but there is still considerable service. Typically there is no owl service.
 * Clearer examples by district: [Redwood Coast (District 1)](#district-01---eureka), [Roseville and Yolobus (District 3)](#district-03---marysville), [PresidiGo (District 4)](#district-04---oakland), [County Express (District 5)](#district-05---san-luis-obispo), [Delano (District 6)](#district-06---fresno), [Bell Gardens (District 7)](#district-07---los-angeles), [Beaumont Pass (District 8)](#district-08---san-bernardino), [Tracy (District 10)](#district-10---stockton), and [Imperial Valley Transit (District 11)](#district-11---san-diego).
 
 
-#### Steady 24 Hour Service
+### Steady 24 Hour Service
 * [Bay Area 511 Muni (District 4)](#district-04---oakland) provides some level of service at all hours of the day. While it drops to roughly 10-15% capacity between 1 AM - 4 AM, it's impressive that there are still over 12,000 stops with scheduled service on the system. Service is simiar on the weekends as it is on weekdays.
 * [Bay Area 511 BART (District 4)](#district-04---oakland) is similar to Muni. Two notable differences are that there is no BART service between 2 AM - 3 AM on weekdays (2 AM - 4 AM on weekends) and that weekend service begins one hour later in the morning.
 
-#### Commuter Service
+### Commuter Service
 * [Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)](#district-04---oakland) both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
 
-#### Primarily Midday Service
+### Primarily Midday Service
 * [Cerritos on Wheels (District 7)](#district-07---los-angeles) operates strictly during business hours (9 AM - 5 PM).
 
-#### Service for Travelers
+### Traveler Service
 * [LAX FlyAway (District 7)](#district-07---los-angeles) operates round-the-clock, dipping only between 2 AM - 3 AM.
 * [Anaheim Resort (District 12)](#district-12---irvine) continuously provides shuttle service to Disneyland visitors, except from 2 AM - 4 AM.
-    
+
+### Methodology
+
+**About**
+
+The Caltrans Division of Data & Digital Services (you may also know us as the [California Integrated Travel Project](https://www.calitp.org/)) has a data warehouse that daily ingests all the available GTFS schedule and real-time feeds for all transit operators in the state (and some outside of it too, like Amtrak)! We are working on modernize the tranpsortation experience through our data and digital lens. 
+
+Learn more about us or reach out: 
+* [our analysis portfolio](analysis.calitp.org)
+* [data-analyses GitHub](https://github.com/cal-itp/data-analyses/)
+* [open source data-infrastructure](https://github.com/cal-itp/data-infra/)
+* [email](mailto:hello@calitp.org)
+
+**Who / What / Where / When / Why / How**
+
+**Who**: All California operators.
+
+**What**: The main dataset used for this analysis is *stop times*, essentially one timetable that shows all the scheduled stop arrivals on a given day. 
+
+**Where**: California - yes, this is for the entire state!
+
+**When**: We are using the stop times tables spanning April 15 - 21, 2024.
+
+**Why**: We can see what service patterns look like across operators by hour of the day. In one table, we can quickly see a summary snapshot of what this service pattern is and see the type of riders the operator typically serves. Here's the same [chart](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7160583/figure/fig6/) made in a [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7160583) about for transit in Calgary, Canada.
+
+**How**: All the stop times are binned by departure hour and aggregated by hour, day, and operator. There is a step to inject rows to hold zeroes where there is no scheduled stop arrival (since those would naturally *not* appear in our dataset). The dataset is then aggregated for each operator by weekday and weekend. To make regional comparisons easier, a crosswalk is merged in so we know which Caltrans District the operator belongs in.
 
 ## District Tables
 
