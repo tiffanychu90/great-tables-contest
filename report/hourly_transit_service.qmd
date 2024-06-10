@@ -4,27 +4,35 @@ execute:
   echo: false
 format:
   html:
-    theme: yeti
-    cold-fold: true
     mainfont: sans-serif
     monofont: sans-serif
+    css: boostrap_sandstone.css
+    #theme: flatly
+    anchor-sections: true
+    toc: true
+    toc-title: Contents
+    #toc-expand: true
+    toc-depth: 3
+    code-links:
+     - text: Datasets
+       href: https://github.com/tiffanychu90/great-tables-contest/blob/main/data/
+     - text: Data Cleaning Code
+       href: https://github.com/tiffanychu90/great-tables-contest/blob/main/scripts/aggregate.py
+     - text: GTFS
+       href: https://gtfs.org   
+     - text: GTFS stop times
+       href: https://gtfs.org/schedule/reference/#stop_timestxt 
+     - text: Cal-ITP Analysis Products
+       href: https://analysis.calitp.org     
+     - text: Reach Out!
+       href: mailto:hello@calitp.org
 jupyter: python3
+
 ---
 
 ```{python}
 #| tags: []
-%%html
-<style type='text/css'>
-.CodeMirror{
-font-size: 12px;
-</style>
-```
-
-
-```{python}
-#| tags: []
-# flatly, lumen, sandstone, yeti
-#import pandas as pd
+# theme: flatly, lumen, sandstone, yeti
 import polars as pl
 from great_tables import GT, _data_color, md, nanoplot_options
 from IPython.display import Markdown
@@ -73,16 +81,18 @@ nano_options = nanoplot_options(
 # https://quarto.org/docs/output-formats/html-themes.html
 # https://github.com/posit-dev/great-tables/blob/main/great_tables/_data_color/constants.py
 def make_plot(df):
+    """
+    Make table for each district.
+    """
+    # equivalent of df.iloc
+    district_name = df.item(0, "caltrans_district")
+    
     table = (GT(df)
-     #.data_color(
-     #    columns = ["caltrans_district"],
-     #    palette = "Pastel1"
-     #)
     .fmt_integer(
           columns = ["n_trips"]
      ).data_color(
         columns=["n_trips"],
-        palette=["white", "steelblue"],
+        palette=["white", get_hex("mediumseagreen")],
         na_color="lightgray"
      ).fmt_nanoplot(
          columns = "weekday_arrivals", 
@@ -103,7 +113,7 @@ def make_plot(df):
          columns = ["weekday_arrivals", "weekend_arrivals"],
          missing_text = ""
      ).tab_header(
-         title = "Transit Arrivals by the Hour",
+         title = f"Stop Arrivals by Hour",
          #subtitle = "weekday vs weekend totals"
      )#.tab_source_note(
       #   source_note = "GTFS scheduled stop_times.txt"
@@ -128,32 +138,162 @@ def make_plot(df):
     return table
 ```
 
-```{python}
-#| tags: []
-def district_plot(district_name: str):
-    display(Markdown(f"## {district_name}"))
-    table = make_plot(df.filter(pl.col("caltrans_district") == district_name))
-    display(table)
-```
-
 How does transit service breakdown by the hour?
 
 While transit operators typically operate at higher frequencies during peak 
 commuting hours, there might be differences across operators. 
 
-Some operators might have consistent all day service (District 7 - LA Metro), while others
-operate primarily during peak hours or only certain hours of the day. 
-
 We can use GTFS scheduled stop times to count the number of arrivals 
-for each hour of the day and look at how weekday and weekend service differ by operators.
-    
-References:
-* [General Transit Feed Specification](https://gtfs.org/)
-* [GTFS stop_times table](https://gtfs.org/schedule/reference/#stop_timestxt)
+for each hour of the day and look at how weekday and weekend service differ by operators. Within each Caltrans District, operators are sorted according to the number of weekly trip volume, from least to most.
+
+## Service Patterns
+
+### Higher Peak Service with Steady Midday Service
+* This is a common service pattern. There are slight camel peaks during the AM and PM peak periods. Service may drop slightly during early morning, midday, and evening periods, but there is still considerable service. Typically there is no owl service.
+* Clearer examples by district: [Redwood Coast (District 1)](#eureka), [Roseville and Yolobus (District 3)](#marysville), [PresidiGo (District 4)](#oakland), [County Express (District 5)](#san-luis-obispo), [Delano (District 6)](#fresno), [DowneyLINK GMV (District 7)](#los-angeles), [Beaumont Pass (District 8)](#san-bernardino), [Tracy (District 10)](#stockton), and [Imperial Valley Transit (District 11)](#san-diego).
+
+
+### Steady 24 Hour Service
+* [Bay Area 511 Muni (District 4)](#oakland) provides some level of service at all hours of the day. While it drops to roughly 10-15% capacity between 1 AM - 4 AM, it's impressive that there are still over 12,000 stops with scheduled service on the system. Service is simiar on the weekends as it is on weekdays.
+* [Bay Area 511 BART (District 4)](#oakland) is similar to Muni. Two notable differences are that there is no BART service between 2 AM - 3 AM on weekdays (2 AM - 4 AM on weekends) and that weekend service begins one hour later in the morning.
+
+### Commuter Service
+* [Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)](#oakland) both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
+
+### Primarily Midday Service
+* [Cerritos on Wheels (District 7)](#los-angeles) operates strictly during business hours (9 AM - 5 PM).
+
+### Traveler Service
+* [LAX FlyAway (District 7)](#los-angeles) operates round-the-clock, dipping only between 2 AM - 3 AM.
+* [Anaheim Resort (District 12)](#irvine) continuously provides shuttle service to Disneyland visitors, except from 2 AM - 4 AM.
+
+### Methodology
+
+**About**
+
+The Caltrans Division of Data & Digital Services (you may also know us as the [California Integrated Travel Project](https://www.calitp.org/)) has a data warehouse that daily ingests all the available GTFS schedule and real-time feeds for all transit operators in the state (and some outside of it too, like Amtrak)! We are working on modernize the tranpsortation experience through our data and digital lens. 
+
+**Who / What / Where / When / Why / How**
+
+**Who**: All California operators.
+
+**What**: The main dataset used for this analysis is *stop times*, essentially one timetable that shows all the scheduled stop arrivals on a given day. 
+
+**Where**: California - yes, this is for the entire state!
+
+**When**: We are using the stop times tables spanning April 15 - 21, 2024.
+
+**Why**: We can see what service patterns look like across operators by hour of the day. In one table, we can quickly see a summary snapshot of what this service pattern is and see the type of riders the operator typically serves. Here's the same [chart](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7160583/figure/fig6/) made in a [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7160583) about for transit in Calgary, Canada.
+
+**How**: All the stop times are binned by departure hour and aggregated by hour, day, and operator. There is a step to inject rows to hold zeroes where there is no scheduled stop arrival (since those would naturally *not* appear in our dataset). The dataset is then aggregated for each operator by weekday and weekend. To make regional comparisons easier, a crosswalk is merged in so we know which Caltrans District the operator belongs in.
+
+## District Tables
 
 ```{python}
 #| tags: []
-for d in all_districts:
-    district_plot(d)
+
+#for d in all_districts:
+    #table = make_plot(df.filter(pl.col("caltrans_district") == d))
+    #display(
+    #    Markdown(f"### District {d}")
+    #)
+    #display(table)
+    
 ```
 
+
+### 01 - Eureka
+
+```{python}
+#| tags: []
+d = "01 - Eureka"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 02 - Redding
+
+```{python}
+#| tags: []
+d = "02 - Redding"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 03 - Marysville
+
+```{python}
+#| tags: []
+d = "03 - Marysville"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 04 - Oakland
+
+```{python}
+#| tags: []
+d = "04 - Oakland"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 05 - San Luis Obispo
+
+```{python}
+#| tags: []
+d = "05 - San Luis Obispo"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 06 - Fresno
+
+```{python}
+#| tags: []
+d = "06 - Fresno"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 07 - Los Angeles
+
+```{python}
+#| tags: []
+d = "07 - Los Angeles"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 08 - San Bernardino
+
+```{python}
+#| tags: []
+d = "08 - San Bernardino"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 09 - Bishop
+
+```{python}
+#| tags: []
+d = "09 - Bishop"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 10 - Stockton
+
+```{python}
+#| tags: []
+d = "10 - Stockton"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 11 - San Diego
+
+```{python}
+#| tags: []
+d = "11 - San Diego"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 12 - Irvine
+
+```{python}
+#| tags: []
+d = "12 - Irvine"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
