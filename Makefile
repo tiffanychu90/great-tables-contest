@@ -1,5 +1,6 @@
 install_env:
 	pip install -r requirements.txt
+	#quarto add mcanouil/quarto-iconify
 
 process_data:
 	#cd scripts/ && python download_data.py
