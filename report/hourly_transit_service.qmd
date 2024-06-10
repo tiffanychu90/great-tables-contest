@@ -11,13 +11,17 @@ format:
     anchor-sections: true
     toc: true
     toc-title: Contents
-    toc-expand: true
-    toc-depth: 4
+    #toc-expand: true
+    toc-depth: 3
     code-links:
      - text: Datasets
        href: https://github.com/tiffanychu90/great-tables-contest/blob/main/data/
      - text: Data Cleaning Code
        href: https://github.com/tiffanychu90/great-tables-contest/blob/main/scripts/aggregate.py
+     - text: GTFS
+       href: https://gtfs.org   
+     - text: GTFS stop times
+       href: https://gtfs.org/schedule/reference/#stop_timestxt    
 jupyter: python3
 
 ---
@@ -140,13 +144,22 @@ for each hour of the day and look at how weekday and weekend service differ by o
 
 ## Service Patterns
 
-### Commuter Service
+#### Higher Peak Service with Steady Midday Service
+* This is a common service pattern. There are slight camel peaks during the AM and PM peak periods. Service may drop slightly during early morning, midday, and evening periods, but there is still considerable service. Typically there is no owl service.
+* Clearer examples by district: [Redwood Coast (District 1)](#district-01---eureka), [Roseville and Yolobus (District 3)](#district-03---marysville), [PresidiGo (District 4)](#district-04---oakland), [County Express (District 5)](#district-05---san-luis-obispo), [Delano (District 6)](#district-06---fresno), [Bell Gardens (District 7)](#district-07---los-angeles), [Beaumont Pass (District 8)](#district-08---san-bernardino), [Tracy (District 10)](#district-10---stockton), and [Imperial Valley Transit (District 11)](#district-11---san-diego).
+
+
+#### Steady 24 Hour Service
+* [Bay Area 511 Muni (District 4)](#district-04---oakland) provides some level of service at all hours of the day. While it drops to roughly 10-15% capacity between 1 AM - 4 AM, it's impressive that there are still over 12,000 stops with scheduled service on the system. Service is simiar on the weekends as it is on weekdays.
+* [Bay Area 511 BART (District 4)](#district-04---oakland) is similar to Muni. Two notable differences are that there is no BART service between 2 AM - 3 AM on weekdays (2 AM - 4 AM on weekends) and that weekend service begins one hour later in the morning.
+
+#### Commuter Service
 * [Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)](#district-04---oakland) both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
 
-### Primarily Midday Service
+#### Primarily Midday Service
 * [Cerritos on Wheels (District 7)](#district-07---los-angeles) operates strictly during business hours (9 AM - 5 PM).
 
-### Service for Travelers
+#### Service for Travelers
 * [LAX FlyAway (District 7)](#district-07---los-angeles) operates round-the-clock, dipping only between 2 AM - 3 AM.
 * [Anaheim Resort (District 12)](#district-12---irvine) continuously provides shuttle service to Disneyland visitors, except from 2 AM - 4 AM.
     
@@ -155,15 +168,18 @@ for each hour of the day and look at how weekday and weekend service differ by o
 
 ```{python}
 #| tags: []
-for d in all_districts:
-    table = make_plot(df.filter(pl.col("caltrans_district") == d))
+
+#for d in all_districts:
+    #table = make_plot(df.filter(pl.col("caltrans_district") == d))
     #display(
     #    Markdown(f"### District {d}")
     #)
     #display(table)
+    
 ```
 
-### District 01 - Eureka
+
+### 01 - Eureka
 
 ```{python}
 #| tags: []
@@ -171,7 +187,7 @@ d = "01 - Eureka"
 make_plot(df.filter(pl.col("caltrans_district") == d))
 ```
 
-### District 02 - Redding
+### 02 - Redding
 
 ```{python}
 #| tags: []
@@ -179,10 +195,82 @@ d = "02 - Redding"
 make_plot(df.filter(pl.col("caltrans_district") == d))
 ```
 
+### 03 - Marysville
 
+```{python}
+#| tags: []
+d = "03 - Marysville"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
 
+### 04 - Oakland
 
-#### References
-* [General Transit Feed Specification](https://gtfs.org/)<br>
-* [GTFS stop_times table](https://gtfs.org/schedule/reference/#stop_timestxt)
+```{python}
+#| tags: []
+d = "04 - Oakland"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
 
+### 05 - San Luis Obispo
+
+```{python}
+#| tags: []
+d = "05 - San Luis Obispo"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 06 - Fresno
+
+```{python}
+#| tags: []
+d = "06 - Fresno"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 07 - Los Angeles
+
+```{python}
+#| tags: []
+d = "07 - Los Angeles"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 08 - San Bernardino
+
+```{python}
+#| tags: []
+d = "08 - San Bernardino"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 09 - Bishop
+
+```{python}
+#| tags: []
+d = "09 - Bishop"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 10 - Stockton
+
+```{python}
+#| tags: []
+d = "10 - Stockton"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 11 - San Diego
+
+```{python}
+#| tags: []
+d = "11 - San Diego"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### 12 - Irvine
+
+```{python}
+#| tags: []
+d = "12 - Irvine"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
