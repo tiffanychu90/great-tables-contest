@@ -6,7 +6,20 @@ format:
   html:
     mainfont: sans-serif
     monofont: sans-serif
+    css: boostrap_sandstone.css
+    #theme: flatly
+    anchor-sections: true
+    toc: true
+    toc-title: Contents
+    toc-expand: true
+    toc-depth: 4
+    code-links:
+     - text: Datasets
+       href: https://github.com/tiffanychu90/great-tables-contest/blob/main/data/
+     - text: Data Cleaning Code
+       href: https://github.com/tiffanychu90/great-tables-contest/blob/main/scripts/aggregate.py
 jupyter: python3
+
 ---
 
 ```{python}
@@ -92,8 +105,8 @@ def make_plot(df):
          columns = ["weekday_arrivals", "weekend_arrivals"],
          missing_text = ""
      ).tab_header(
-         title = f"District {district_name}: Stop Arrivals by Hour",
-         subtitle = "weekday vs weekend totals"
+         title = f"Stop Arrivals by Hour",
+         #subtitle = "weekday vs weekend totals"
      )#.tab_source_note(
       #   source_note = "GTFS scheduled stop_times.txt"
      #).tab_source_note(
@@ -125,27 +138,51 @@ commuting hours, there might be differences across operators.
 We can use GTFS scheduled stop times to count the number of arrivals 
 for each hour of the day and look at how weekday and weekend service differ by operators. Within each Caltrans District, operators are sorted according to the number of weekly trip volume, from least to most.
 
-Here are a couple of interesting service patterns:
+## Service Patterns
 
-## Commuter Service
-* **Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)** both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
+### Commuter Service
+* [Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)](#district-04---oakland) both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
 
-## Primarily Midday Service
-* **Cerritos on Wheels (District 7)** operates strictly during business hours (9 AM - 5 PM).
+### Primarily Midday Service
+* [Cerritos on Wheels (District 7)](#district-07---los-angeles) operates strictly during business hours (9 AM - 5 PM).
 
-## Service for Travelers
-* **LAX FlyAway (District 7)** operates round-the-clock, dipping only between 2 AM - 3 AM.
-* **Anaheim Resort (District 12)** continuously provides shuttle service to Disneyland visitors, except from 2 AM - 4 AM.
+### Service for Travelers
+* [LAX FlyAway (District 7)](#district-07---los-angeles) operates round-the-clock, dipping only between 2 AM - 3 AM.
+* [Anaheim Resort (District 12)](#district-12---irvine) continuously provides shuttle service to Disneyland visitors, except from 2 AM - 4 AM.
     
-### References
-* [General Transit Feed Specification](https://gtfs.org/)<br>
-* [GTFS stop_times table](https://gtfs.org/schedule/reference/#stop_timestxt)
+
+## District Tables
 
 ```{python}
 #| tags: []
 for d in all_districts:
     table = make_plot(df.filter(pl.col("caltrans_district") == d))
-    display(table)
+    #display(
+    #    Markdown(f"### District {d}")
+    #)
+    #display(table)
 ```
 
+### District 01 - Eureka
+
+```{python}
+#| tags: []
+d = "01 - Eureka"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+### District 02 - Redding
+
+```{python}
+#| tags: []
+d = "02 - Redding"
+make_plot(df.filter(pl.col("caltrans_district") == d))
+```
+
+
+
+
+#### References
+* [General Transit Feed Specification](https://gtfs.org/)<br>
+* [GTFS stop_times table](https://gtfs.org/schedule/reference/#stop_timestxt)
 
