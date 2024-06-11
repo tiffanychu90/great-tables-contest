@@ -1,5 +1,5 @@
 ---
-title: Transit Service in California
+title: Transit Service Patterns in California
 execute:
   echo: false
 format:
@@ -11,20 +11,26 @@ format:
     anchor-sections: true
     toc: true
     toc-title: Contents
-    #toc-expand: true
+    #toc-expand: true # when off, it expands when we scroll through
     toc-depth: 3
     code-links:
      - text: Datasets
+       icon: github
        href: https://github.com/tiffanychu90/great-tables-contest/blob/main/data/
      - text: Data Cleaning Code
+       icon: github
        href: https://github.com/tiffanychu90/great-tables-contest/blob/main/scripts/aggregate.py
      - text: GTFS
+       icon: bus-front
        href: https://gtfs.org   
      - text: GTFS stop times
+       icon: bus-front
        href: https://gtfs.org/schedule/reference/#stop_timestxt 
      - text: Cal-ITP Analysis Products
+       icon: bar-chart-fill
        href: https://analysis.calitp.org     
      - text: Reach Out!
+       icon: envelope
        href: mailto:hello@calitp.org
 jupyter: python3
 
@@ -138,13 +144,11 @@ def make_plot(df):
     return table
 ```
 
-How does transit service breakdown by the hour?
+Have you ever been curious about transit service patterns in California? What would hourly service patterns tell us about the types of riders the operator is oriented to serve? 
 
-While transit operators typically operate at higher frequencies during peak 
-commuting hours, there might be differences across operators. 
+Service geared towards commuters have pronounced camel peaks during the AM and PM peak commuting hours. Service geared towards travelers would provide mostly consistent service throughout the day. After all, travelers passing through the airport expect to catch a shuttle, no matter the time-of-day.
 
-We can use GTFS scheduled stop times to count the number of arrivals 
-for each hour of the day and look at how weekday and weekend service differ by operators. Within each Caltrans District, operators are sorted according to the number of weekly trip volume, from least to most.
+We can use GTFS scheduled stop times to count the number of arrivals for each hour of the day and look at how weekday and weekend service differ by operators. Within each Caltrans District, operators are sorted according to the number of weekly trip volume. **A `great_tables` nanoplot is a great way to convey, at a glance, the operator's hourly service profile while situating the operator's service in a regional context.** 
 
 ## Service Patterns
 
@@ -161,7 +165,7 @@ for each hour of the day and look at how weekday and weekend service differ by o
 * [Bay Area 511 Mission Bay and Bay Area 511 Commute.org (District 4)](#oakland) both serve commuter riders primarily, with pronounced AM and PM peak service, no scheduled midday arrivals during weekdays, and no weekend service.
 
 ### Primarily Midday Service
-* [Cerritos on Wheels (District 7)](#los-angeles) operates strictly during business hours (9 AM - 5 PM).
+* [Cerritos on Wheels (District 7)](#los-angeles) delivers meals to seniors, and operates strictly during business hours (9 AM - 5 PM). Operating strictly within typical business hours is consistent with an operator providing a type of government service. 
 
 ### Traveler Service
 * [LAX FlyAway (District 7)](#los-angeles) operates round-the-clock, dipping only between 2 AM - 3 AM.
