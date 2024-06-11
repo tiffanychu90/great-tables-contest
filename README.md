@@ -17,3 +17,9 @@ A `great_tables` nanoplot is a great way to convey, at a glance, the operator’
 * What is the [General Transit Feed Specification (GTFS)](https://gtfs.org) and what is in the [stop_times](https://gtfs.org/schedule/reference/#stop_timestxt) table?
 * What is the Caltrans [Division of Data and Digital Services](https://www.calitp.org/) about and what are our other [analysis products](https://analysis.calitp.org)?
 * Reach out to [Cal-ITP](mailto:hello@calitp.org) or [Tiffany](mailto:tiffany.ku@dot.ca.gov)
+
+## Reproducing the Table
+* If you have Docker installed, run `docker compose build` (the first time) and `docker compose up` to start up the container.
+   * This is the same environment backing Cal-ITP's JupyterHub with no changes (by design!)
+* To install several other packages used in this repository, `cd great-tables-contest/` and run `make install_env`.
+* To take the raw data and transform it into the processed data frame for the table, run `make process_data`.
