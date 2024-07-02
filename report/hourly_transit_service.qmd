@@ -7,33 +7,30 @@ format:
     mainfont: sans-serif
     monofont: sans-serif
     css: boostrap_sandstone.css
-    #theme: flatly
     anchor-sections: true
     toc: true
     toc-title: Contents
-    #toc-expand: true # when off, it expands when we scroll through
     toc-depth: 3
     code-links:
-     - text: Datasets
-       icon: github
-       href: https://github.com/tiffanychu90/great-tables-contest/blob/main/data/
-     - text: Data Cleaning Code
-       icon: github
-       href: https://github.com/tiffanychu90/great-tables-contest/blob/main/scripts/aggregate.py
-     - text: GTFS
-       icon: bus-front
-       href: https://gtfs.org   
-     - text: GTFS stop times
-       icon: bus-front
-       href: https://gtfs.org/schedule/reference/#stop_timestxt 
-     - text: Cal-ITP Analysis Products
-       icon: bar-chart-fill
-       href: https://analysis.calitp.org     
-     - text: Reach Out!
-       icon: envelope
-       href: mailto:hello@calitp.org
+      - text: Datasets
+        icon: github
+        href: 'https://github.com/tiffanychu90/great-tables-contest/blob/main/data/'
+      - text: Data Cleaning Code
+        icon: github
+        href: 'https://github.com/tiffanychu90/great-tables-contest/blob/main/scripts/aggregate.py'
+      - text: GTFS
+        icon: bus-front
+        href: 'https://gtfs.org'
+      - text: GTFS stop times
+        icon: bus-front
+        href: 'https://gtfs.org/schedule/reference/#stop_timestxt'
+      - text: Cal-ITP Analysis Products
+        icon: bar-chart-fill
+        href: 'https://analysis.calitp.org'
+      - text: Reach Out!
+        icon: envelope
+        href: 'mailto:hello@calitp.org'
 jupyter: python3
-
 ---
 
 ```{python}
@@ -175,7 +172,7 @@ We can use GTFS scheduled stop times to count the number of arrivals for each ho
 
 **About**
 
-The Caltrans Division of Data & Digital Services (you may also know us as the [California Integrated Travel Project](https://www.calitp.org/)) has a data warehouse that daily ingests all the available GTFS schedule and real-time feeds for all transit operators in the state (and some outside of it too, like Amtrak)! We are working on modernize the tranpsortation experience through our data and digital lens. 
+The Caltrans Division of Data & Digital Services (you may also know us as the [California Integrated Travel Project](https://www.calitp.org/)) has a data warehouse that daily ingests all the available GTFS schedule and real-time feeds for all transit operators in the state (and some outside of it too, like Amtrak)! We are working on modernizing the transportation experience through our data and digital lens. 
 
 **Who / What / Where / When / Why / How**
 
@@ -195,16 +192,13 @@ The Caltrans Division of Data & Digital Services (you may also know us as the [C
 
 ```{python}
 #| tags: []
-
 #for d in all_districts:
     #table = make_plot(df.filter(pl.col("caltrans_district") == d))
     #display(
     #    Markdown(f"### District {d}")
     #)
     #display(table)
-    
 ```
-
 
 ### 01 - Eureka
 
@@ -301,3 +295,4 @@ make_plot(df.filter(pl.col("caltrans_district") == d))
 d = "12 - Irvine"
 make_plot(df.filter(pl.col("caltrans_district") == d))
 ```
+
